@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:usesCleartextTraffic="true"
+
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -10,9 +14,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject_Abdallah"
+
         tools:targetApi="31">
         <activity
-
+            android:name=".UI.SavedWeatherPage"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"/>
+        <activity
+            android:name=".UI.WeatherNowPage"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+        <activity
             android:name=".UI.WeatherStackPage"
             android:exported="false" />
         <activity
@@ -25,10 +37,10 @@
             android:name=".UI.NasaPage"
             android:exported="false" />
         <activity
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
