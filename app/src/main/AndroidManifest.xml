@@ -26,6 +26,7 @@
             android:exported="false" />
         <activity
             android:name=".UI.WeatherStackPage"
+
             android:exported="false" />
         <activity
             android:name=".UI.NewYorkPage"

@@ -22,9 +22,9 @@ public class WeatherDetailsFragment extends Fragment {
 
     WeatherItem selected;
 
-    public WeatherDetailsFragment(WeatherItem w){
+    public WeatherDetailsFragment(WeatherItem w) {
 
-        selected=w;
+        selected = w;
 
 
     }
@@ -33,12 +33,6 @@ public class WeatherDetailsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-
-
-
-
-
-
 
 
         return true;
@@ -50,27 +44,20 @@ public class WeatherDetailsFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
 
-
-        WeatherDetailsBinding binding=WeatherDetailsBinding.inflate(inflater);
+        WeatherDetailsBinding binding = WeatherDetailsBinding.inflate(inflater);
 
 
         binding.getRoot().setBackgroundColor(Color.WHITE);
-        binding.weatherDetailsId.setText("Id = "+selected.id);
-        binding.weatherDetailsName.setText("Name : "+selected.getName());
-        binding.weatherDetailsLocateTime.setText("LocateTime : "+selected.getLocateTime());
-        binding.weatherDetailsTemperature.setText("Temperature : " +selected.getTemperature());
+        binding.weatherDetailsId.setText("Id = " + selected.id);
+        binding.weatherDetailsName.setText("Name : " + selected.getName());
+        binding.weatherDetailsLocateTime.setText("LocateTime : " + selected.getLocateTime());
+        binding.weatherDetailsTemperature.setText("Temperature : " + selected.getTemperature());
         binding.weatherDetailsIcon.setImageBitmap(BitmapFactory.decodeFile(selected.getPathName()));
-        binding.weatherDetailsDescription.setText("Description = "+selected.getDescription());
-        binding.weatherDetailsHumidity.setText("humidity = "+selected.getHumidity());
-
-
-
-
-
+        binding.weatherDetailsDescription.setText("Description = " + selected.getDescription());
+        binding.weatherDetailsHumidity.setText("humidity = " + selected.getHumidity());
 
 
         return binding.getRoot();
-
 
 
     }
