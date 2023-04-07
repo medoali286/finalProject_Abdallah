@@ -40,9 +40,10 @@ public class SavedWeatherPage extends AppCompatActivity {
 
     private WeatherViewModel weatherModel;
     private ActivitySavedWeatherBinding binding;
-
-
-
+    private  boolean IsSelected;
+    int position;
+    private WeatherDetailsFragment weatherFragment;
+    public TextView tv_city;
 
 
 
@@ -67,11 +68,52 @@ public class SavedWeatherPage extends AppCompatActivity {
         switch( item.getItemId() ) {
             case R.id.Item_1:
 
-                Intent weatherNowPage = new Intent(this, WeatherNowPage.class);
 
-                startActivity(weatherNowPage);
+                if (weatherItems.size() != 0 && IsSelected) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SavedWeatherPage.this);
+                    builder.setMessage("Do you want to Delete this City : " + tv_city.getText().toString()).
+                            setTitle("Question").
+                            setNegativeButton("no", (dialog, cl) -> {
+                            })
+                            .setPositiveButton("yes", (dialog, cl) -> {
+
+                                WeatherItem removedItem = weatherItems.get(position);
+                                thread.execute(() ->
+                                {
+
+                                    mDAO.deleteWeatherItem(removedItem);
+
+                                });
+                                runOnUiThread(() -> {
+                                    weatherItems.remove(position);
+                                    myAdapter.notifyItemRemoved(position);
+                                });
 
 
+                                Snackbar.make(binding.getRoot(), "You deleted City " + tv_city.getText(), Snackbar.LENGTH_SHORT)
+                                        .setAction("Undo", c -> {
+                                            weatherItems.add(position, removedItem);
+                                            myAdapter.notifyItemInserted(position);
+                                        }).show();
+
+
+
+
+                                getSupportFragmentManager().popBackStack();
+
+
+
+
+
+
+                                IsSelected = false;
+
+
+                            }).create().show();
+
+
+                }
 
 
                 break;
@@ -172,7 +214,7 @@ public class SavedWeatherPage extends AppCompatActivity {
             Log.i("tag", "onCreate: " + newWeatherItemValue.getName());
 
 
-            WeatherDetailsFragment weatherFragment = new WeatherDetailsFragment(newWeatherItemValue);
+            weatherFragment = new WeatherDetailsFragment(newWeatherItemValue);
 
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLocation, weatherFragment).addToBackStack("").commit();
@@ -245,10 +287,15 @@ public class SavedWeatherPage extends AppCompatActivity {
 
             itemView.setOnClickListener(clk -> {
 
-                int position = getAbsoluteAdapterPosition();
+           position = getAbsoluteAdapterPosition();
                 WeatherItem selected = weatherItems.get(position);
 
                 weatherModel.selectedWeatherItem.postValue(selected);
+tv_city=city;
+
+
+                IsSelected=true;
+
             });
 
 
@@ -287,6 +334,12 @@ public class SavedWeatherPage extends AppCompatActivity {
 
 
                         }).create().show();
+
+
+
+
+
+
 
                 return true;
             });

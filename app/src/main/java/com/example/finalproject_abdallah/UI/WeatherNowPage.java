@@ -96,16 +96,7 @@ public class WeatherNowPage extends AppCompatActivity {
 
 
         switch( item.getItemId() ) {
-            case R.id.Item_1:
 
-                Intent weatherNowPage = new Intent(this, SavedWeatherPage.class);
-
-                startActivity(weatherNowPage);
-
-
-
-
-                break;
 
 
             case R.id.Item_2:
