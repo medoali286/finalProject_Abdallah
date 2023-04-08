@@ -49,12 +49,12 @@ public class WeatherDetailsFragment extends Fragment {
 
         binding.getRoot().setBackgroundColor(Color.WHITE);
         binding.weatherDetailsId.setText("Id = " + selected.id);
-        binding.weatherDetailsName.setText("Name : " + selected.getName());
+        binding.weatherDetailsName.setText("City Name : " + selected.getName());
         binding.weatherDetailsLocateTime.setText("LocateTime : " + selected.getLocateTime());
-        binding.weatherDetailsTemperature.setText("Temperature : " + selected.getTemperature());
+        binding.weatherDetailsTemperature.setText("Temperature : " + selected.getTemperature()+"°C");
         binding.weatherDetailsIcon.setImageBitmap(BitmapFactory.decodeFile(selected.getPathName()));
-        binding.weatherDetailsDescription.setText("Description = " + selected.getDescription());
-        binding.weatherDetailsHumidity.setText("humidity = " + selected.getHumidity());
+        binding.weatherDetailsDescription.setText("Description : " + selected.getDescription());
+        binding.weatherDetailsHumidity.setText("humidity : " + selected.getHumidity());
 
 
         return binding.getRoot();

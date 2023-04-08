@@ -97,9 +97,19 @@ public class WeatherNowPage extends AppCompatActivity {
 
         switch( item.getItemId() ) {
 
+            case R.id.Item_1:
+
+                Intent intent = new Intent(this,SavedWeatherPage.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+                startActivity(intent);
+                this.finish();
 
 
-            case R.id.Item_2:
+                break;
+
+
+
+                case R.id.Item_2:
 
 
 
@@ -116,13 +126,42 @@ public class WeatherNowPage extends AppCompatActivity {
 
 
 
+                break;
+
+            case R.id.Item_3:
+
+
+
+                thread.execute(() ->
+                {
+                    if (cityName != null) {
+
+                        mDAO.insertMessage(new WeatherItem(cityName, localtime, String.valueOf(temperature), pathName, weather_descriptions, humidity, pathName));
+
+
+
+                        runOnUiThread(() -> {
+                            Toast.makeText(WeatherNowPage.this,  cityName + " saved to your favourite list", Toast.LENGTH_LONG).show();
+                        });
+
+
+
+
+
+                        // Snackbar.make(binding.getRoot(), "City " + cityName + " saved", Snackbar.LENGTH_SHORT).show();
+
+                    } else {
+                        runOnUiThread(() -> {
+                            Toast.makeText(binding.getRoot().getContext(), "No Item Exist to save", Toast.LENGTH_LONG).show();
+                        });
+
+                        //   Snackbar.make(binding.getRoot(), "please search city first", Snackbar.LENGTH_SHORT).show();
+                    }
+                });
 
 
 
                 break;
-
-
-
         }
         return true;
 
@@ -148,7 +187,7 @@ public class WeatherNowPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Weather Now");
+        setTitle("Search Weather");
 
 
         queue = Volley.newRequestQueue(this);
@@ -180,36 +219,7 @@ public class WeatherNowPage extends AppCompatActivity {
         });
 
 
-        binding.save.setOnClickListener(clk -> {
 
-            thread.execute(() ->
-            {
-                if (cityName != null) {
-
-                    mDAO.insertMessage(new WeatherItem(cityName, localtime, String.valueOf(temperature), pathName, weather_descriptions, humidity, pathName));
-
-
-
-                    runOnUiThread(() -> {
-                        Toast.makeText(WeatherNowPage.this, "City " + cityName + " saved", Toast.LENGTH_LONG).show();
-                    });
-
-
-
-
-
-                    // Snackbar.make(binding.getRoot(), "City " + cityName + " saved", Snackbar.LENGTH_SHORT).show();
-
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(binding.getRoot().getContext(), "please search city first", Toast.LENGTH_LONG).show();
-                    });
-
-                 //   Snackbar.make(binding.getRoot(), "please search city first", Snackbar.LENGTH_SHORT).show();
-                }
-            });
-
-        });
 
 
         binding.weatherSearchButton.setOnClickListener(clk -> {
@@ -285,19 +295,19 @@ public class WeatherNowPage extends AppCompatActivity {
                                 runOnUiThread(() -> {
 
 
-                                    binding.weatherCityName.setText("City : " + cityName);
+                                    binding.weatherCityName.setText( cityName);
                                     binding.weatherCityName.setVisibility(View.VISIBLE);
 
 
-                                    binding.weatherDetailsLocateTime.setText("LocateTime : " + localtime);
+                                    binding.weatherDetailsLocateTime.setText( localtime);
                                     binding.weatherDetailsLocateTime.setVisibility(View.VISIBLE);
 
 
-                                    binding.weatherTemperature.setText("The current temperature is " + temperature + " c");
+                                    binding.weatherTemperature.setText("temperature : " + temperature + " °C");
                                     binding.weatherTemperature.setVisibility(View.VISIBLE);
 
 
-                                    binding.weatherHumidity.setText("The humidity is " + humidity + "%");
+                                    binding.weatherHumidity.setText("humidity : " + humidity + "%");
                                     binding.weatherHumidity.setVisibility(View.VISIBLE);
 
                                     binding.weatherIcon.setImageBitmap(image);
@@ -305,7 +315,7 @@ public class WeatherNowPage extends AppCompatActivity {
                                     binding.weatherIcon.setVisibility(View.VISIBLE);
 
 
-                                    binding.weatherDescription.setText("Descriptions: " + weather_descriptions);
+                                    binding.weatherDescription.setText(weather_descriptions);
                                     binding.weatherDescription.setVisibility(View.VISIBLE);
 
 
