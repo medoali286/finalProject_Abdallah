@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.example.finalproject_abdallah.UI.NasaPage;
 import com.example.finalproject_abdallah.UI.NewYorkPage;
 import com.example.finalproject_abdallah.UI.PlaceKittenPage;
-import com.example.finalproject_abdallah.UI.WeatherStackPage;
+import com.example.finalproject_abdallah.UI.WeatherNowPage;
 import com.example.finalproject_abdallah.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
         binding.weather.setOnClickListener(clk->{
 
-    Intent WeatherStackPage=new Intent(this, WeatherStackPage.class);
+    Intent weatherNowPage=new Intent(this, WeatherNowPage.class);
 
-    startActivity(WeatherStackPage);
+    startActivity(weatherNowPage);
 
 });
 

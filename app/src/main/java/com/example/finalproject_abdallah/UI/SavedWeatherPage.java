@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -40,17 +41,16 @@ public class SavedWeatherPage extends AppCompatActivity {
 
     private WeatherViewModel weatherModel;
     private ActivitySavedWeatherBinding binding;
-
-
-
-
+    private boolean IsSelected;
+    int position;
+    private WeatherDetailsFragment weatherFragment;
+    public TextView tv_city;
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.saved_weather_menu, menu);
-
 
 
         return true;
@@ -63,14 +63,13 @@ public class SavedWeatherPage extends AppCompatActivity {
         super.onOptionsItemSelected(item);
 
 
-
-        switch( item.getItemId() ) {
+        switch (item.getItemId()) {
             case R.id.Item_1:
 
-                Intent weatherNowPage = new Intent(this, WeatherNowPage.class);
-
-                startActivity(weatherNowPage);
-
+                Intent intent = new Intent(this,WeatherNowPage.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+                startActivity(intent);
+                this.finish();
 
 
 
@@ -80,25 +79,65 @@ public class SavedWeatherPage extends AppCompatActivity {
             case R.id.Item_2:
 
 
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(SavedWeatherPage.this);
-                builder.setMessage("•\tClick on “Weather now”:\n" +
+                AlertDialog.Builder about_builder = new AlertDialog.Builder(SavedWeatherPage.this);
+                about_builder.setMessage("•\tClick on “Weather now”:\n" +
                                 "   o\tType in the city you would like to \n       retrieve the weather details.\n" +
                                 "   o\tHit search.\n" +
                                 "   o\tYou may save your research for future \n       retrieval, by hitting on save button.  \n\n" +
                                 "•\tClick on “Saved weather”:\n" +
-                                "   o\tYou may navigate between the saved \n       destination to display the respective \n       weather.\n" ).
+                                "   o\tYou may navigate between the saved \n       destination to display the respective \n       weather.\n").
                         setTitle("How to use the WeatherStack?").
                         setNegativeButton("ok", (dialog, cl) -> {
                         }).create().show();
 
 
+                break;
+
+            case R.id.Item_3:
 
 
+                if (weatherItems.size() != 0 && IsSelected) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SavedWeatherPage.this);
+                    builder.setMessage("Do you want to Delete this City : " + tv_city.getText().toString()).
+                            setTitle("Question").
+                            setNegativeButton("no", (dialog, cl) -> {
+                            })
+                            .setPositiveButton("yes", (dialog, cl) -> {
+
+                                WeatherItem removedItem = weatherItems.get(position);
+                                thread.execute(() ->
+                                {
+
+                                    mDAO.deleteWeatherItem(removedItem);
+
+                                });
+                                runOnUiThread(() -> {
+                                    weatherItems.remove(position);
+                                    myAdapter.notifyItemRemoved(position);
+                                });
+
+
+                                Snackbar.make(binding.getRoot(), "You deleted City " + tv_city.getText(), Snackbar.LENGTH_SHORT)
+                                        .setAction("Undo", c -> {
+                                            weatherItems.add(position, removedItem);
+                                            myAdapter.notifyItemInserted(position);
+                                        }).show();
+
+
+                                getSupportFragmentManager().popBackStack();
+
+
+                                IsSelected = false;
+
+
+                            }).create().show();
+
+
+                }
 
 
                 break;
-
 
 
         }
@@ -108,22 +147,13 @@ public class SavedWeatherPage extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
-
         binding = ActivitySavedWeatherBinding.inflate(getLayoutInflater());
-        setTitle("Saved Weather");
+        setTitle("Favourite Weather");
         setSupportActionBar(binding.toolbar);
 
         weatherModel = new ViewModelProvider(this).get(WeatherViewModel.class);
@@ -172,7 +202,7 @@ public class SavedWeatherPage extends AppCompatActivity {
             Log.i("tag", "onCreate: " + newWeatherItemValue.getName());
 
 
-            WeatherDetailsFragment weatherFragment = new WeatherDetailsFragment(newWeatherItemValue);
+            weatherFragment = new WeatherDetailsFragment(newWeatherItemValue);
 
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentLocation, weatherFragment).addToBackStack("").commit();
@@ -226,7 +256,7 @@ public class SavedWeatherPage extends AppCompatActivity {
         });
 
 
-        binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recycleView.setLayoutManager(new GridLayoutManager(this,2));
 
 
     }
@@ -245,10 +275,15 @@ public class SavedWeatherPage extends AppCompatActivity {
 
             itemView.setOnClickListener(clk -> {
 
-                int position = getAbsoluteAdapterPosition();
+                position = getAbsoluteAdapterPosition();
                 WeatherItem selected = weatherItems.get(position);
 
                 weatherModel.selectedWeatherItem.postValue(selected);
+                tv_city = city;
+
+
+                IsSelected = true;
+
             });
 
 
@@ -287,6 +322,7 @@ public class SavedWeatherPage extends AppCompatActivity {
 
 
                         }).create().show();
+
 
                 return true;
             });
